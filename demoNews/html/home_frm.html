@@ -23,7 +23,7 @@
   <% for(i in ret) {%>
   <ul class="aui-list aui-media-list">
       <% if(ret[i].type==1){%>
-      <li class="aui-list-item">
+      <li class="aui-list-item" tapmode onclick="fnOpenDetailWin(<%=ret[i].news_id%>)">
           <div class="aui-media-list-item-inner">
               <div class="aui-list-item-inner">
                   <div class="aui-list-item-text">
@@ -33,7 +33,7 @@
                       <div class="aui-info-item aui-font-size-12">
                           <img src="<%=host%><%=ret[i].image%>" style="width:1rem" class="aui-img-round" /><span class="aui-margin-l-5">AUI</span>
                           </div>
-                      <div class="aui-info-item aui-font-size-12">2015-07-14 10:31</div>
+                      <div class="aui-info-item aui-font-size-12"><%=ret[i].createTime%></div>
                   </div>
               </div>
               <div class="aui-list-item-media">
@@ -42,7 +42,7 @@
           </div>
       </li>
       <%}else if(ret[i].type==3){%>
-      <li class="aui-list-item">
+      <li class="aui-list-item" onclick="fnOpenDetailWin(<%=ret[i].news_id%>)">
           <div class="aui-list-item-inner">
               <div class="aui-list-item-title aui-font-size-18"><%=ret[i].title%></div>
               <div class="aui-row aui-row-padded aui-margin-t-5">
@@ -65,21 +65,20 @@
           </div>
       </li>
       <%}else if(ret[i].type==2){%>
-      <li class="aui-list-item">
+      <li class="aui-list-item" onclick="fnOpenPhotoBrowser(<%=ret[i].news_id%>)">
           <div class="aui-list-item-inner">
-              <div class="aui-list-item-title aui-font-size-18">中国拥有世界顶级航天芯片产品：俄罗斯造不出来了只能求中国分享</div>
+              <div class="aui-list-item-title aui-font-size-18"><%=ret[i].title%></div>
               <div class="aui-row aui-row-padded aui-margin-t-5">
                   <div class="aui-col-xs-12">
-                      <img src="../image/demo/1.jpeg"/>
+                      <img src="<%=host%><%=ret[i].image0%>"/>
                   </div>
               </div>
           </div>
           <div class="aui-info  aui-padded-t-0 aui-padded-r-15">
               <div class="aui-info-item aui-font-size-12">
-                  <img src="../image/demo1.png" style="width:1rem" class="aui-img-round" />
-                  <span class="aui-margin-l-5">中关村在线</span>
+                  <img src="<%=host%><%=ret[i].image%>" style="width:1rem" class="aui-img-round" />
+                  <span class="aui-margin-l-5"><%=ret[i].publisher_title%></span>
               </div>
-              <div class="aui-info-item aui-font-size-12">26条评论</div>
           </div>
       </li>
       <%}%>
@@ -89,6 +88,28 @@
 <script type="text/javascript" src="../script/api.js" ></script>
 <script type="text/javascript" src="../script/template-native.js" ></script>
 <script type="text/javascript">
+function fnOpenPhotoBrowser(news_id){
+  api.openWin({
+      name: 'photo_browser_win',
+      url: 'photo_browser_win.html',
+      pageParam: {
+          'news_id': news_id
+      }
+  });
+}
+
+function fnOpenDetailWin(news_id){
+  //打开详情页：
+  api.openWin({
+      name: 'detail_win',
+      url: 'detail_win.html',
+      pageParam: {
+          'news_id': news_id
+      }
+  });
+
+}
+
 apiready = function(){
    api.showProgress({
        style: 'default',
@@ -129,9 +150,7 @@ apiready = function(){
          }
      });
    }
-
     getData();
-
 }
 </script>
 </html>
