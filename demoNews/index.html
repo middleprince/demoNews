@@ -110,7 +110,7 @@
         <div id="footer" class="border-t">
             <ul class="flex-wrap">
                 <li tapmode class="flex-con active" onclick="fnOpenHomeFrameGroup()">首页</li>
-                <li tapmode class="flex-con" onclick="fnOpenVideoFrame()">视频</li>
+                <li tapmode class="flex-con" onclick="fnOpenVideoFrame()">视频</li> 
                 <li tapmode class="flex-con" onclick="fnOpenThemeFrame()">话题</li>
                 <li tapmode class="flex-con" onclick="fnOpenMyFrame()">我的</li>
             </ul>
@@ -125,7 +125,7 @@
     var header;
     var footer;
     apiready = function() {
-        $api.setStorage('host', 'http://172.16.121.1:8080/NewsSystem/');
+        $api.setStorage('host', 'http://192.168.1.7:8888/NewsSystem/');
 
         api.removeLaunchView();
 
@@ -145,7 +145,7 @@
         header = $api.dom('header');
         footer = $api.dom('#footer');
     }
-    //隐藏所有frame
+    //隐藏所有frame 在切换frame之前隐藏之前的frame，解决在刷新时出现的之前的窗口内容造成的覆盖。 
     function fnHiddenFrame() {
         api.setFrameAttr({
             name: 'video_frm',
@@ -229,7 +229,7 @@
         var index = $(this).index();
         //点击尾部高亮
         $('#footer li').eq(index).addClass('active').siblings().removeClass('active');
-        //点击尾部，头部窗口条相应切换：
+        //点击尾部，头部窗口条相应切换：底部状态导航栏点击切换。
         $('header li').eq(index).addClass('active').siblings().removeClass('active');
     });
 

@@ -1,71 +1,102 @@
 <!DOCTYPE HTML>
 <html>
+
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
     <meta name="format-detection" content="telephone=no,email=no,date=no,aItemress=no">
     <title>AUI快速完成布局</title>
     <link rel="stylesheet" type="text/css" href="../css/aui.css" />
 </head>
-<body>
-    <section class="aui-content">
-        <div class="aui-card-list aui-border-t aui-border-b">
-            <div class="aui-info aui-padded-l-15 aui-padded-r-15">
-                <div class="aui-info-item aui-font-size-12">
-                    <img src="../image/demo1.png" style="width:1rem" class="aui-img-round" />
-                    <span class="aui-margin-l-5">Sim Chen 发表的热门文章</span>
-                </div>
-                <div class="aui-info-item">
-                    <i class="aui-iconfont aui-icon-more"></i>
-                </div>
-            </div>
-            <div class="aui-card-list-content">
-                <img src="../image/l1.png" />
-            </div>
-            <div class="aui-card-list-header aui-padded-t-5 aui-padded-b-5">
-                中国拥有世界顶级航天芯片产品：俄罗斯造不出来了只能求中国分享
-            </div>
-            <div class="aui-card-list-content-padded aui-padded-t-0 aui-padded-b-0" style="color:#7b7b7b;">
-                如果谈及中国在技术领域的短板，那么大家可能想到的是发动机，其实还有一样：高级电子芯片！人们通常所说的CPU，所谓CPU即中央处理器，就是其代表产品，它可是为电子信息产品的心脏,是集成电路产品的终端级产品。
-            </div>
-            <div class="aui-card-list-footer aui-font-size-12" style="color:#999;">
-                <div>
-                    <span>2048 赞</span> - <span>295 评论</span> - <span>去往栏目</span>
-                </div>
-            </div>
-        </div>
-        <div class="aui-card-list aui-border-t aui-border-b">
-            <div class="aui-info aui-padded-l-15 aui-padded-r-15">
-                <div class="aui-info-item aui-font-size-12">
-                    <img src="../image/demo1.png" style="width:1rem" class="aui-img-round" />
-                    <span class="aui-margin-l-5">Sim Chen 发表的热门文章</span>
-                </div>
-                <div class="aui-info-item">
-                    <i class="aui-iconfont aui-icon-more"></i>
-                </div>
-            </div>
-            <div class="aui-card-list-content">
-                <img src="../image/l2.png" />
-            </div>
-            <div class="aui-card-list-header aui-padded-t-5 aui-padded-b-5">
-                中国拥有世界顶级航天芯片产品：俄罗斯造不出来了只能求中国分享
-            </div>
-            <div class="aui-card-list-content-padded aui-padded-t-0 aui-padded-b-0" style="color:#7b7b7b;">
-                如果谈及中国在技术领域的短板，那么大家可能想到的是发动机，其实还有一样：高级电子芯片！人们通常所说的CPU，所谓CPU即中央处理器，就是其代表产品，它可是为电子信息产品的心脏,是集成电路产品的终端级产品。
-            </div>
-            <div class="aui-card-list-footer aui-font-size-12" style="color:#999;">
-                <div>
-                    <span>2048 赞</span> - <span>295 评论</span> - <span>去往栏目</span>
-                </div>
-            </div>
-        </div>
-    </section>
+
+<body id='body'>
+
 </body>
-<script type="text/javascript" src="../script/api.js" ></script>
+<script type="text/html" id="template">
+    <section class="aui-content">
+        <% for(i in ret){%>
+            <div class="aui-card-list aui-border-t aui-border-b" tapmode onclick="fnPlayVideo(<%=ret[i].video_id%>)">
+                <div class="aui-card-list-content">
+                    <img src="<%=host%><%=ret[i].imagePath%>" />
+                </div>
+                <div class="aui-card-list-header aui-padded-t-5 aui-padded-b-5">
+                    <%=ret[i].title%>
+                </div>
+            </div>
+            <%}%>
+    </section>
+</script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/template-native.js"></script>
 <script type="text/javascript">
-    apiready = function(){
-        api.parseTapmode();
+
+var video_ids=[];
+var titles=[];
+var videos=[];
+
+var index;
+function fnPlayVideo(video_id){
+    for(i in video_ids){
+        if(video_id==video_ids[i]){
+            index = i;
+        }
     }
 
+    //调用视频模块播放视频：
+    videoPlayer.play({
+        texts: {
+            head: {
+                title: titles[index]
+            }
+        },
+        path: host+videos[index], //（可选项）字符串类型；文档的路径，支持网络和本地（fs://）路径；默认：未传值时不播放
+        //在 android 平台上不支持 widget://
+        autoPlay: true //（可选项）布尔类型；打开时是否自动播放；默认：true（自动播放）
+    }, function(ret, err) {
+        if (ret) {
+            alert(JSON.stringify(ret));
+        } else {
+            alert(JSON.stringify(err));
+        }
+    });
+
+}
+    apiready = function() {
+        videoPlayer = api.require('videoPlayer');
+        host = $api.getStorage('host');
+
+        //请求数据：
+        api.ajax({
+            url: host + 'VideoServlet/findAll',
+            method: 'get'
+        }, function(ret, err) {
+            if (ret) {
+                var data = {
+                    'ret': ret,
+                    'host': host
+                };
+                html = template('template', data);
+                $api.dom('body').innerHTML = html;
+
+          //遍历数据:
+          for (i in ret){
+              video_ids.push(ret[i].video_id);
+              titles.push(ret[i].title);
+              videos.push(ret[i].path);
+          }
+
+            } else {
+                alert(JSON.stringify(err));
+            }
+        });
+
+
+
+
+
+
+
+    }
 </script>
+
 </html>
