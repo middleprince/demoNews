@@ -37,3 +37,6 @@
 /A6076162849404/image/my/close.png
 /A6076162849404/image/my/praise.png
 /A6076162849404/icon/icon150x150.png
+/A6076162849404/html/photo_browser_win.html
+/A6076162849404/html/detail_frm.html
+/A6076162849404/html/detail_win.html
