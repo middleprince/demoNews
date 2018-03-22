@@ -67,7 +67,7 @@
             height: 100%;
             width: 100%;
         }
-/*
+        /*
         #user .qqLogin {
             position: absolute;
             top: 50%;
@@ -119,21 +119,21 @@
             background-position: center top;
             background-repeat: no-repeat;
         }
-        #img{
+
+        #img {
             display: none;
             /*background-color: #000;*/
-            width:80px;
+            width: 80px;
             height: 80px;
             position: absolute;
             border-radius: 50%;
-            top:50%;
-            left:50%;
+            top: 50%;
+            left: 50%;
             margin-top: -40px;
             margin-left: -40px;
-
         }
 
-        #username{
+        #username {
             display: none;
             width: 100px;
             height: 28px;
@@ -144,7 +144,6 @@
             text-align: center;
             color: #fff;
             font-weight: bold;
-
         }
 
         .logins .tel {
@@ -162,7 +161,8 @@
         .logins .wb {
             background-image: url(../image/my/wb.png);
         }
-        .logins .head{
+
+        .logins .head {
             background-image: url(../image/my/wb.png);
         }
 
@@ -243,10 +243,9 @@
                 <div class="login_pic tel open-win" win="login_mobile"></div>
                 <div class="login_pic wx"></div>
                 <div class="login_pic qq" tapmode onclick="fnQQLogin()"></div>
-                <div class="login_pic wb" ></div>
+                <div class="login_pic wb"></div>
             </div>
             <div class="text open-win" win="login_choose" id="login_choose"></div>
-
         </div>
         <!-- <div class="logined"> -->
         <img src="" alt="" id="img">
@@ -302,9 +301,87 @@
 </body>
 <script type="text/javascript" src="../script/api.js"></script>
 <script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/zepto.min.js"></script>
 <script type="text/javascript">
+    function fnQQLogin() {
+        qq.login(function(ret, err) {
+            var openId = ret.openId;
+            if (ret.status) {
+                qq.getUserInfo(function(ret, err) {
+                    if (ret.status) {
+                        //获得昵称和头像地址
+                        nickname = ret.info.nickname;
+                        head = ret.info.figureurl_qq_2;
+                        //显示头像和昵称
+                        $('#img').attr('src', head).css('display', 'block');
+                        $('#username').html(nickname).css('display', 'block');
+                        //隐藏其他登录方式：
+                        $('#user').css('display', 'none');
+                        //存储昵称和头像地址：
+                        $api.setStorage('user', {'nickname':nickname,'head':head,'openId':openId});
 
+                        //注册：
+                        var host = $api.getStorage('host');
 
+                        api.ajax({
+                            url: host+'/UserServlet/register',
+                            method: 'post',
+                            data: {
+                                values: {
+                                    openId: openId,
+                                    nickname:nickname,
+                                    head:head
+                                }
+                            }
+                        },function(ret, err){
+                            if (ret) {
+                              if(ret.status){
+                                  // alert('成功');
+                              }else{
+                                  // alert('失败');
+                              }
+                            } else {
+                                alert( JSON.stringify( err ) );
+                            }
+                        });
+                    } else {
+                        api.alert({
+                            msg: err.msg
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    function fnQQLogout() {
+        qq.logout(function(ret, err) {
+            if (ret.status) {
+                api.toast({
+                    msg: '退出成功'
+                });
+                $('#img').css('display', 'none');
+                $('#username').css('display', 'none');
+                //隐藏其他登录方式：
+                $('#user').css('display', 'block');
+                $api.rmStorage('user');
+            } else {
+                api.alert({
+                    msg: err.msg
+                });
+            }
+        });
+    }
+    apiready = function() {
+        qq = api.require('qq');
+        var user = $api.getStorage('user');
+        if(user){
+          $('#img').attr('src', user.head).css('display', 'block');
+          $('#username').html(user.nickname).css('display', 'block');
+          //隐藏其他登录方式：
+          $('#user').css('display', 'none');
+        }
+    }
 </script>
 
 </html>
