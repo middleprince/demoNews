@@ -42,3 +42,5 @@
 /A6076162849404/html/detail_win.html
 /A6076162849404/html/fabu_frm.html
 /A6076162849404/html/fabu_win.html
+/A6076162849404/css/aui-iconfont.ttf
+/A6076162849404/image/my/detail_hawking.jpg

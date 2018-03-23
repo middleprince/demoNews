@@ -108,6 +108,7 @@ function fnCommit(){
     $('img').each(function(){
       images.push($(this).attr('src'));
     });
+    
     //执行提交：
     var host = $api.getStorage('host');
     var openId = $api.getStorage('user').openId;
@@ -117,7 +118,7 @@ function fnCommit(){
         data: {
             values: {
                 text: text,
-                address:address,
+                address:"山西省晋中市榆次区太原理工大学",
                 openId:openId
             },
             files: {
@@ -138,12 +139,14 @@ function fnCommit(){
 
             }
         } else {
+            alert("send fall");
             alert( JSON.stringify( err ) );
         }
     });
 
 }
   function fnStartCarema(){
+    
      api.actionSheet({
          title: '选择',
          cancelTitle: '这里是取消按钮',
@@ -206,21 +209,29 @@ function fnCommit(){
 
     apiready = function() {
         var bMap = api.require('bMap');
+        
         bMap.getLocation({
             accuracy: '100m',
             autoStop: true
         }, function(ret, err) {
             if (ret.status) {
                 // alert(JSON.stringify(ret));
+               // 需要百度的开发者账号的验证才可以使用该功能。！！！！！！！！
                 bMap.getNameFromCoords({
                     lon:ret.lon,
                     lat:ret.lat
                 }, function(ret, err) {
+                   alert(err);
                     if (ret.status) {
                         // alert(JSON.stringify(ret));
-                        address = ret.poiList[0].address;
+                        
+                       var address = ret.poiList[0].address;
+                        alert(address);  
                         $api.dom('#location').innerHTML = address ;
-                    }
+                    }else {
+                         address = "山西省晋中市榆次区太原理工大学" ;
+                        $api.dom('#location').innerHTML = address ;
+                        }
                 });
             } else {
                 alert(err.code);
